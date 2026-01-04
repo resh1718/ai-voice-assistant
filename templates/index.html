@@ -4,6 +4,7 @@
     <title>AI Assistant</title>
 </head>
 <body>
+
     <h2>AI Assistant for Small Business</h2>
 
     <form method="post">
@@ -12,7 +13,28 @@
     </form>
 
     {% if reply %}
-        <p><b>Assistant:</b> {{ reply }}</p>
+        <p id="assistant-reply">
+            <b>Assistant:</b> {{ reply }}
+        </p>
     {% endif %}
+
+    <!-- VOICE SCRIPT -->
+    <script>
+        function speakText(text) {
+            if ('speechSynthesis' in window) {
+                const speech = new SpeechSynthesisUtterance(text);
+                speech.lang = 'en-US';
+                window.speechSynthesis.speak(speech);
+            }
+        }
+
+        window.onload = function () {
+            const reply = document.getElementById("assistant-reply");
+            if (reply) {
+                speakText(reply.innerText);
+            }
+        };
+    </script>
+
 </body>
 </html>

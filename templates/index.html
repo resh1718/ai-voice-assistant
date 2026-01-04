@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AI Assistant</title>
+</head>
+<body>
+    <h2>AI Assistant for Small Business</h2>
+
+    <form method="post">
+        <input type="text" name="message" placeholder="Ask something..." required>
+        <button type="submit">Ask</button>
+    </form>
+
+    {% if reply %}
+        <p><b>Assistant:</b> {{ reply }}</p>
+    {% endif %}
+</body>
+</html>

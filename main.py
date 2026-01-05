@@ -1,37 +1,33 @@
-import os
 from flask import Flask, render_template, request
+import os
 from openai import OpenAI
 
 app = Flask(__name__)
 
-# OpenAI client (API key taken automatically from environment variable)
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
-def get_reply(user_message):
+def get_reply(user_text):
     try:
         response = client.chat.completions.create(
-            model="gpt-3.5-turbo",
+            model="gpt-4o-mini",
             messages=[
-                {"role": "system", "content": "You are a helpful AI assistant for a small business."},
-                {"role": "user", "content": user_message}
-            ],
-            max_tokens=150
+                {"role": "system", "content": "You are a helpful assistant for a small business."},
+                {"role": "user", "content": user_text}
+            ]
         )
-        return response.choices[0].message.content.strip()
-
+        return response.choices[0].message.content
     except Exception as e:
-        print("OpenAI Error:", e)
+        print("ERROR:", e)
         return "Sorry, AI service temporarily unavailable."
 
 @app.route("/", methods=["GET", "POST"])
-def index():
-    reply = None
+def home():
+    reply = ""
     if request.method == "POST":
-        user_message = request.form.get("message")
-        if user_message:
-            reply = get_reply(user_message)
-
+        user_text = request.form["message"]
+        reply = get_reply(user_text)
     return render_template("index.html", reply=reply)
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
+    port = int(os.environ.get("PORT", 10000))
+    app.run(host="0.0.0.0", port=port)

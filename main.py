@@ -21,7 +21,8 @@ def get_reply(user_text):
         return response.choices[0].message.content.strip()
     except Exception as e:
         print("ERROR:", e)
-        return "Sorry, AI service temporarily unavailable."
+        return f"ERROR: {str(e)}"
+
 
 @app.route("/", methods=["GET", "POST"])
 def home():
@@ -34,3 +35,4 @@ def home():
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port)
+

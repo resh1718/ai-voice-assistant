@@ -1,23 +1,26 @@
 from flask import Flask, render_template, request
-import openai
+from openai import OpenAI
 import os
 
 app = Flask(__name__)
 
-# 🔐 OpenAI API Key (Render la Environment Variable use pannalaam)
-openai.api_key = os.environ.get("OPENAI_API_KEY")
+client = OpenAI(
+    api_key=os.getenv("OPENAI_API_KEY")
+)
 
 def get_reply(user_text):
     try:
-        response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",
+        response = client.chat.completions.create(
+            model="gpt-4o-mini",
             messages=[
-                {"role": "system", "content": "You are an AI assistant for a small business. Answer politely and shortly."},
+                {"role": "system", "content": "You are a helpful assistant for a small business."},
                 {"role": "user", "content": user_text}
-            ]
+            ],
+            max_tokens=100
         )
-        return response.choices[0].message.content
+        return response.choices[0].message.content.strip()
     except Exception as e:
+        print("ERROR:", e)
         return "Sorry, AI service temporarily unavailable."
 
 @app.route("/", methods=["GET", "POST"])
@@ -29,5 +32,5 @@ def home():
     return render_template("index.html", reply=reply)
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))
+    port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port)
